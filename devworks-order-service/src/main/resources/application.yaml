@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: devworks-order-service
+server:
+  port: 8081
+
+resilience4j.retry:
+  instances:
+    paymentRetry:
+      maxAttempts: 4
+      waitDuration: 2s
+      retryExceptions:
+        - org.springframework.web.reactive.function.client.WebClientRequestException
+        - java.net.ConnectException

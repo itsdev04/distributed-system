@@ -1,0 +1,22 @@
+package com.devworks.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+public class PaymentResponse {
+    private String transactionId;
+    private String orderId;
+    private String status;
+
+    public PaymentResponse(String transactionId, String orderId, String status) {
+    this.orderId = orderId;
+    this.transactionId = transactionId;
+    this.status = status;
+    }
+
+}
