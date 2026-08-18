@@ -2,6 +2,8 @@ package com.devworks.service;
 
 import com.devworks.dto.PaymentRequest;
 import com.devworks.dto.PaymentResponse;
+import com.devworks.event.PaymentCompletedEvent;
+import com.devworks.publisher.PaymentEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +18,11 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
+    private final PaymentEventPublisher eventPublisher;
+
+    public PaymentService(PaymentEventPublisher eventPublisher){
+        this.eventPublisher = eventPublisher;
+    }
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
     public PaymentResponse processPayment(String idempotencyKey, PaymentRequest request){
@@ -45,5 +52,15 @@ public class PaymentService {
     }
 
     private PaymentResponse executePaymentCall(PaymentRequest request) {
-        return new PaymentResponse("TXN_" + UUID.randomUUID(), request.getOrderId(), "SUCCESS");}
+
+        PaymentResponse response = new PaymentResponse("TXN_" + UUID.randomUUID(), request.getOrderId(), "SUCCESS");
+        PaymentCompletedEvent event = new PaymentCompletedEvent(
+          response.getOrderId(),
+          response.getTransactionId(),
+          request.getAmount(),
+                response.getStatus()
+        );
+        eventPublisher.publishPaymentCompleted(event);
+        return response;
+    }
 }

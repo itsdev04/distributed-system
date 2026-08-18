@@ -1,13 +1,12 @@
 package com.devworks.dto;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 public class PaymentRequest {
-    private String orderId;
-    private BigDecimal amount;
+  private String orderId;
+  private BigDecimal amount;
 }

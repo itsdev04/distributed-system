@@ -18,8 +18,9 @@ public class OrderController {
   }
 
   @PostMapping
-  public ResponseEntity<String> createOrder(@RequestHeader(value = "X-Idempotency-Key", required = true) String idempotencyKey,
-                                    @RequestBody PaymentRequest request) {
+  public ResponseEntity<String> createOrder(
+      @RequestHeader(value = "X-Idempotency-Key", required = true) String idempotencyKey,
+      @RequestBody PaymentRequest request) {
     log.info("Received request to create order");
     String response = orderService.createOrder(request.getOrderId(), request.getAmount());
     return new ResponseEntity<>(response, HttpStatus.OK);
